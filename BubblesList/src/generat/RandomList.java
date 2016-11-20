@@ -7,16 +7,16 @@ public class RandomList {
 	
 	public void printList() //drukuje listê klasy RandomList
 	{
-	for(int i=0;i<tab.length;i++)
-		System.out.print(tab[i]+" ");
-	System.out.println();
+		for(int i=0;i<tab.length;i++)
+			System.out.print(tab[i]+" ");
+		System.out.println();
 	}
 	
 	public void printList(int tabL[]) //drukuje listê dowolna
 	{
-	for(int i=0;i<tabL.length;i++)
-		System.out.print(tabL[i]+" ");
-	System.out.println();
+		for(int i=0;i<tabL.length;i++)
+			System.out.print(tabL[i]+" ");
+		System.out.println();
 	}
 	
 	private boolean checkNumInList(int num)//sprawdza w liscie czy dana liczba by³a juz wylosowana na podstawie tej liczby,tabeli
@@ -31,7 +31,7 @@ public class RandomList {
 	
 	public int[] generatRandomList(int n, int z)   ///generuje tablice d³ugoœci n znaków z przedzia³u z, z>=n musi byc
 	{
-		 tab=new int[n];
+		tab=new int[n];
 		
 		for(int i = 0;i<n;i++)
 		{
