@@ -29,7 +29,6 @@ param maxProdukcja := 	#maxymalna moc produkcji na okres
 				2	35000;
 				
 param limitSprzedazy := 
-					50000;
-param cena   := 20;
+
 
 
