@@ -55,11 +55,11 @@ public class Gui extends JFrame {
       panelBut=new JPanel();
       panelOrg1=new JPanel();
       panelOrg1.setBorder(new TitledBorder("Dane pocz¹tkowe"));
-      panelShowOutput.setBorder(new TitledBorder("Wyniki symulacji"));
-      panelInsertValu.setBorder(new TitledBorder("Wprowadz wartoœci"));
+      panelShowOutput.setBorder(new TitledBorder("Wyniki przeprowadzonej symulacji"));
+      panelInsertValu.setBorder(new TitledBorder("Wprowadz swoje oczekiwania"));
       
       GridLayout grid1 = new GridLayout(4, 1);
-      grid1.setHgap(3);grid1.setVgap(3);
+      grid1.setHgap(10);grid1.setVgap(10);
       GridLayout grid2 = new GridLayout(5, 2);
       grid2.setHgap(3);grid2.setVgap(3);
       
@@ -70,23 +70,23 @@ public class Gui extends JFrame {
       panelBut.setLayout(new GridLayout());   
       
       money=new JLabel("Dostêpna gotówka: ");
-      adMoney = new JLabel("Ile chcesz przeznaczyæ na reklame : ");
-      minQual=new JLabel("Podaj jakoœæ min");
-      maxQual=new JLabel("Podaj jakoœæ max");
-      minCenaS=new JLabel("Podaj minimum ceny sprzedzy");
-      maxCenaS=new JLabel("Podaj maximum ceny sprzedzy");
-      risk=new JLabel("Wybierz poziom ryzyka");
+      adMoney = new JLabel("Wydatki na reklamê");
+      minQual=new JLabel("Okreœl jakoœæ min");
+      maxQual=new JLabel("Okreœl jakoœæ max");
+      minCenaS=new JLabel("Minimalna cena sprzeda¿y");
+      maxCenaS=new JLabel("Maksymalna cena sprzeda¿y");
+      risk=new JLabel("Prawd. sprzedarzy(ryzyko) [0.0-0.99]");
       
-      cenaSO=new JLabel("Cena sprzeda¿y ustaw");
-      qualO=new JLabel("Najlepsza jakoœc");
-      productionO=new JLabel("Iloœæ ustalona do produkcji");
+      cenaSO=new JLabel("Cena sprzeda¿y");
+      qualO=new JLabel("Wybrana jakoœæ");
+      productionO=new JLabel("Wytypowana iloœæ produkcji");
       predProfi=new JLabel("Przewidywany zysk");
       
       Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
-      LcenaSO=new JLabel("WYNIK");
-      LqualO=new JLabel("WYNIK");
-      LproductionO=new JLabel("WYNIKI");
-      LpredProfi=new JLabel("WYNIKI");
+      LcenaSO=new JLabel("0.000");
+      LqualO=new JLabel("0.000");
+      LproductionO=new JLabel("0.000");
+      LpredProfi=new JLabel("0.000");
       LcenaSO.setBorder(border);
       LqualO.setBorder(border);
       LproductionO.setBorder(border);
@@ -121,7 +121,8 @@ public class Gui extends JFrame {
       cp.add(panelShowOutput);
       //cp.add(panelOrg1);
       
-      JButton but=new JButton("Wspomó¿ decyzje");
+      JButton but=new JButton("Oblicz parametry dla wprowadzonych danych");
+      but.setBackground(new Color(191, 192, 201));
       but.addActionListener(new ActionListener() {		//wykonanie ca³oœci
 		
 		@Override
