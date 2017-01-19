@@ -1,0 +1,37 @@
+#Sebastian Przybył nr proj 00111
+set Z:=1 2;
+set O:=1 2 3;
+
+param doplywyStaly : 1 2 3:=
+					
+				1 	200	130	180
+				2 	40	15	20
+				;
+param minmag :=
+				1 	1200
+				2 	800;
+				
+param maxmag :=
+				1 	2000
+				2 	1500;
+				
+param startPoz :=
+				1 	1900
+				2 	850;
+				
+				
+
+param wydajnosc :=			#wydajnośc kazdego z generatorów na zbiorniku 
+				1	400
+				2	200;
+param maxProdukcja := 	#maxymalna moc produkcji na okres
+				1	60000
+				2	35000;
+				
+param limitSprzedazy := 
+					50000;
+param cena   := 20;
+param cena2 := 14;
+					
+					
+
