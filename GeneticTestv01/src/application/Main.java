@@ -21,8 +21,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
-
-
 public class Main extends Application  {
 	@Override
 	public void start(Stage primaryStage) throws Exception{
