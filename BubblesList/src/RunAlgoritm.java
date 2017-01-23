@@ -18,7 +18,7 @@ public class RunAlgoritm {
 		}	while(scan!=0);
 		s.close();*/
 		RandomList list=new RandomList();
-		ApplyAlgorithm al=new ApplyAlgorithm(list.generatRandomList(10));
+		ApplyAlgorithm al=new ApplyAlgorithm(list.generatRandomList(40));
 		int []listOrder;
 
 		do
@@ -26,7 +26,7 @@ public class RunAlgoritm {
 			listOrder=al.sortByBubbles();
 			//list.printList(listOrder);
 			list.printListAsTab(listOrder);
-			Thread.sleep(0);		
+			Thread.sleep(205);		
 }
 		while(!Order.checkOrderList(listOrder));
 		System.out.println("Liczba iteracji :"+al.licz);

@@ -1,5 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -46,7 +50,7 @@ public class Gui extends JFrame {
    private JSpinner riskI;
    
    
-   public Gui() {
+   public Gui() throws IOException {
        
       Container cp = this.getContentPane();
       
@@ -115,12 +119,12 @@ public class Gui extends JFrame {
       panelInsertValu.add(minCenaS);panelInsertValu.add(minCenaSI);
       panelInsertValu.add(maxCenaS);panelInsertValu.add(maxCenaSI);
       panelInsertValu.add(risk);panelInsertValu.add(riskI);
-
+      
       cp.add(panelOrg1);
       cp.add(panelInsertValu);
       cp.add(panelShowOutput);
       //cp.add(panelOrg1);
-      
+      addTrayIcon();
       JButton but=new JButton("Oblicz parametry dla wprowadzonych danych");
       but.setBackground(new Color(191, 192, 201));
       but.addActionListener(new ActionListener() {		//wykonanie ca³oœci
@@ -128,6 +132,8 @@ public class Gui extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			setValues();
+			
+			
 		}
 	});
       panelBut.add(but);
@@ -138,7 +144,92 @@ public class Gui extends JFrame {
       setSize(WINDOW_WIDTH, WINDOW_HEIGHT);  // or pack() the components
       setVisible(true);   // show it
    }
- 
+   		public void addTrayIcon() throws IOException{
+   			
+   		 if (!SystemTray.isSupported()) {
+             System.out.println("SystemTray is not supported");
+             return;
+         }
+         final PopupMenu popup = new PopupMenu();
+         final TrayIcon trayIcon =
+                 new TrayIcon(ImageIO.read(new File("seba.jpg")));
+         trayIcon.setToolTip("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+         final SystemTray tray = SystemTray.getSystemTray();
+        
+         // Create a pop-up menu components
+         MenuItem aboutItem = new MenuItem("About");
+         CheckboxMenuItem cb1 = new CheckboxMenuItem("Set auto size");
+         CheckboxMenuItem cb2 = new CheckboxMenuItem("Set tooltip");
+         Menu displayMenu = new Menu("Display");
+         MenuItem errorItem = new MenuItem("Error");
+         MenuItem warningItem = new MenuItem("Warning");
+         MenuItem infoItem = new MenuItem("Info");
+         MenuItem noneItem = new MenuItem("None");
+         MenuItem exitItem = new MenuItem("Exit");
+        JButton ddd = new JButton();
+       
+         //Add components to pop-up menu
+         popup.add(aboutItem);
+         popup.addSeparator();
+         popup.add(cb1);
+         popup.add(cb2);
+         popup.addSeparator();
+         popup.add(displayMenu);
+         displayMenu.add(errorItem);
+         displayMenu.add(warningItem);
+         displayMenu.add(infoItem);
+         displayMenu.add(noneItem);
+         popup.add(exitItem);
+         trayIcon.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				setValues();
+				}})
+		;
+         trayIcon.setPopupMenu(popup);
+         exitItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+				
+			}
+		});
+         try {
+             tray.add(trayIcon);
+         } catch (AWTException e) {
+             System.out.println("TrayIcon could not be added.");
+         }
+        
+   			
+   		}
+   
    public void setValues(){  //g³owna funkcja odpalaj¹ca ampla 
 	   //amplModel.setAd(couter1);
 	    
@@ -169,7 +260,13 @@ public class Gui extends JFrame {
    public static void main(String[] args) {
       SwingUtilities.invokeLater(new Runnable() {
          public void run() {
-            new Gui();  // Let the constructor do the job
+            try {
+				new Gui();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  // Let the constructor do the job
          }
       });
    }
