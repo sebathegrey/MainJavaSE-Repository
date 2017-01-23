@@ -16,7 +16,7 @@ param ryzyko ;#= 0.5;  prawdopodobieństwo ustalane w trzech wariantach
 
 #data data.data;
 
-var jakosc >= 25;
+var jakosc ;
 
 var cenaP = 8.8 + jakosc * 0.005 * 8.8; # cena produkcji 
 var cenaS ;
