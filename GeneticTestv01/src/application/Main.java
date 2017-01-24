@@ -3,6 +3,7 @@ package application;
 import logic.*;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -23,57 +24,67 @@ import javafx.scene.shape.Line;
 
 public class Main extends Application  {
 	@Override
-	public void start(Stage primaryStage) throws Exception{
+	public void start(Stage primaryStage){
 
-			
 			Group root = new Group();
 			Scene scene = new Scene(root, 500, 500, Color.GRAY);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-
-			MyDistanceTab D = new MyDistanceTab();
-			D.init();
-			//D.generatedPopul(10);
-			
-			
-			for(int i=0;i<8;i++){
-				for(int j=0;j<8;j++){
-					Circle circle = new Circle(D.getTabPoint()[i].getX()*5,D.getTabPoint()[i].getY()*5,5);
-					root.getChildren().add(circle);
-				}
-			}
-			Line line=null;
-			MyPoint temp=null,first=null,last=null;
-			Set<MyPoint> points=D.generatedPopul(1000);
-			for(MyPoint p1 : points){
-				if(temp==null){
-					temp=p1;
-					first=p1;
-				}else{
-					line = new MyLine(temp,p1);
-					root.getChildren().add(line);
-					temp=p1;
-					last=p1;
-				}
-			}
 		
-			root.getChildren().add(new MyLine(first,last));		
+			printPopulation(root);
 			//primaryStage.initStyle(StageStyle.UNDECORATED);
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			//saveSceneToImg(scene);
 			
-			DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-			String s= dateFormat.format(new Date())+".png";
-			File file = new File("results/"+s);
-			RenderedImage renderedImage = SwingFXUtils.fromFXImage(scene.snapshot(null), null);
-			ImageIO.write(
-			        renderedImage, 
-			        "png",
-			        file);
-
 	}
 	
 	public static void main(String[] args) {
 		launch(args);
+	}
+	public static void saveSceneToImg(Scene sc){//zapis automatyczny do pliku z aktualn¹ dat¹ 
+
+		
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		String s= dateFormat.format(new Date())+".png";
+		File file = new File("results/"+s);
+		RenderedImage renderedImage = SwingFXUtils.fromFXImage(sc.snapshot(null), null);
+		try {
+			ImageIO.write(
+			        renderedImage, 
+			        "png",
+			        file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void printPopulation(Group gr){
+		
+		MyDistanceTab D = new MyDistanceTab(10,1000);
+		
+		
+		for(int i=0;i<8;i++){
+			for(int j=0;j<8;j++){
+				Circle circle = new Circle(D.getTabPoint()[i].getX()*5,D.getTabPoint()[i].getY()*5,5);
+				gr.getChildren().add(circle);
+			}
+		}
+		Line line=null;
+		MyPoint temp=null,first=null,last=null;
+		Set<MyPoint> points=D.generatedPopul();
+		for(MyPoint p1 : points){
+			if(temp==null){
+				temp=p1;
+				first=p1;
+			}else{
+				line = new MyLine(temp,p1);
+				gr.getChildren().add(line);
+				temp=p1;
+				last=p1;
+			}
+		}
+		gr.getChildren().add(new MyLine(first,last));	
 	}
 }
 
