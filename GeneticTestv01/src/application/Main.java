@@ -61,18 +61,18 @@ public class Main extends Application  {
 
 	public static void printPopulation(Group gr){
 		
-		MyDistanceTab D = new MyDistanceTab(10,1000);
+		Genetics gen= new Genetics();
 		
-		
-		for(int i=0;i<8;i++){
-			for(int j=0;j<8;j++){
-				Circle circle = new Circle(D.getTabPoint()[i].getX()*5,D.getTabPoint()[i].getY()*5,5);
+		for(int i=0;i<20;i++){      // rysowanie punktów 
+			for(int j=0;j<20;j++){
+				Circle circle = new Circle(gen.getPointTab()[i].getX()*5,gen.getPointTab()[i].getY()*5,5);
 				gr.getChildren().add(circle);
 			}
 		}
 		Line line=null;
 		MyPoint temp=null,first=null,last=null;
-		Set<MyPoint> points=D.generatedPopul();
+		//Set<MyPoint> points=D.generatedPopul();
+		Set<MyPoint> points=gen.getBestPopulation();
 		for(MyPoint p1 : points){
 			if(temp==null){
 				temp=p1;
@@ -85,6 +85,7 @@ public class Main extends Application  {
 			}
 		}
 		gr.getChildren().add(new MyLine(first,last));	
+		System.out.println(points + " "+ MyPoint.getID_POINT());
 	}
 }
 

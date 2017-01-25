@@ -3,7 +3,7 @@ package logic;
 public class MyPoint{
 	private int x;
 	private int y;
-	private static int ID_POINT;
+	private static int ID_POINT=0;
 	private int id_p;
 	
 	public MyPoint(int x,int y){

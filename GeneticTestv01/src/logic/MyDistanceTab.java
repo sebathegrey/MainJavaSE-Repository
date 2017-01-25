@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 public class MyDistanceTab {		//klasa generuj¹ca dane oraz populacje
 
-	private Set<Set<MyPoint>> population;
+	private TreeSet<Set<MyPoint>> population;
 	private MyPoint [] myPointTab;
 	private int [][] myDistanc;
 	private int pointCardin;
@@ -21,20 +21,20 @@ public class MyDistanceTab {		//klasa generuj¹ca dane oraz populacje
 		setCardinality(cardinality);
 		initP();
 		population = new TreeSet<Set<MyPoint>>(new MyComparator());
-		//generatedPopul();
+		generatedPopul();
 	}
 
 	public Set<MyPoint> generatedPopul(){// generuje losowe dane do zbiorów zbioru, param licznoœæ zbiorów losowych, licznosc populacji 
 		
 		for(long i=0;i<cardinality;i++){
 			population.add(generatedGen());
-		}		
+		}
 		for(Set<MyPoint> p: population){
 			return p;
 		}
 		return null;
 	}
-	public Set<Set<MyPoint>> getPopulation(){
+	public TreeSet<Set<MyPoint>> getPopulation(){
 	
 		return population;	
 	}
@@ -50,7 +50,7 @@ public class MyDistanceTab {		//klasa generuj¹ca dane oraz populacje
 		    MyPoint next = myPointTab[rng.nextInt(gen)];
 		    generated.add(next);
 		}	
-		System.out.println(generated);
+		//System.out.println(generated);
 		return generated;		
 	}
 	
@@ -68,7 +68,7 @@ public class MyDistanceTab {		//klasa generuj¹ca dane oraz populacje
 		myPointTab[7]=new MyPoint(8,45);
 		myPointTab[8]=new MyPoint(9,84);
 		myPointTab[9]=new MyPoint(84,17);
-		/*myPointTab[10]=new MyPoint(28,41);
+		myPointTab[10]=new MyPoint(28,41);
 		myPointTab[11]=new MyPoint(21,14);
 		myPointTab[12]=new MyPoint(18,9);
 		myPointTab[13]=new MyPoint(55,71);
@@ -77,15 +77,15 @@ public class MyDistanceTab {		//klasa generuj¹ca dane oraz populacje
 		myPointTab[16]=new MyPoint(8,98);
 		myPointTab[17]=new MyPoint(58,38);
 		myPointTab[18]=new MyPoint(77,38);
-		myPointTab[19]=new MyPoint(61,8);*/
+		myPointTab[19]=new MyPoint(61,8);
 		myDistanc=new int[pointNum][pointNum];
 		
 		for(int i=0;i<pointNum;i++){			// inicjalizacja myDistanc wartosci obliczone do porównywania ale mam przeciez nasz Comparator dlat. raczej NOTUSE
 			for(int j=0;j<pointNum;j++){
 				myDistanc[i][j]=myPointTab[i].getDistans(myPointTab[j]);
-				System.out.print(myDistanc[i][j]+" ");
+				//System.out.print(myDistanc[i][j]+" ");
 			}
-			System.out.println();
+			//System.out.println();
 		}
 	}
 	public int [][] getTabDistance(){
