@@ -17,8 +17,8 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 	private double crossProb;
 
 	public Genetics() {
-		population = 50;
-		crossProb = 0.8;
+		population = 100;
+		crossProb = 0.50;
 		replays = 0;
 		popul = new MyDistanceTab(20, population);
 		firstPopulation = popul.getPopulation();
@@ -33,18 +33,17 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 		nextPopulation = new TreeSet<Set<MyPoint>>(new MyComparator());
 
 		int times = (int) (present.size() * crossProb);
-
+		nextPopulation.addAll(present);
 		Set<MyPoint> tmp = null;
 		int i = 0;
 		for (Set<MyPoint> myPoint : present) { // ile elementów pobieramy do
-												// krzy¿owania
-			nextPopulation.add(myPoint);
+
 			if (i == 0) {
 				tmp = myPoint;
-			} else {
+			}else{
 				nextPopulation.add(crossing(tmp, myPoint));
-				nextPopulation.add(crossing(myPoint,tmp));
 				tmp = myPoint;
+				//System.out.println(nextPopulation);
 				}
 			i++;
 
@@ -52,9 +51,11 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 				break;
 		}
 
-		while (replays < 8000) {
+		while (replays < 4000) {
 			replays++;
-			countNextPopulation(selectin(nextPopulation));
+			TreeSet<Set<MyPoint>> nextPopulation2 = new TreeSet<Set<MyPoint>>(new MyComparator());
+			nextPopulation2.addAll(selectin(nextPopulation));
+			countNextPopulation(nextPopulation2);
 		}
 	}
 
@@ -62,74 +63,81 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 		
 		int []points1=new int[MyPoint.getID_POINT()];
 		int []points2=new int[MyPoint.getID_POINT()];
-		int i=0;
+		int ii=0;
 		
 		Set<MyPoint> r=new LinkedHashSet<>();
 		
 		for(MyPoint p : zbior1){
-			points1[i]=p.getId_p();
-			i++;
-	
+			points1[ii]=p.getId_p();
+
+			ii++;
+
 		}
-		int j=0;
+		int jj=0;
 		
 		for(MyPoint p1 : zbior2){
-			points2[j]=p1.getId_p();
-			j++;
+			points2[jj]=p1.getId_p();
+			jj++;
 		}
 		int ogr1=(int)(0.7*MyPoint.getID_POINT());
 		int ogr2=(int)(0.2*MyPoint.getID_POINT());
 		int ogr3=MyPoint.getID_POINT();
-		
-		
-			
-			for(int z=ogr2;z<ogr1;z++){
-				boolean bool1=false;
-				for(int z2=ogr2;z2<ogr1;z2++){
-				
-					if(points1[z]==points2[z2]){
-						bool1=true;
-					}					
-				}
-			
-				if (bool1==false){
-					int temp=0;
-					for(int z2=ogr1;z2<ogr3;z2++){
-						for(int zp=ogr1;zp<ogr3;zp++){
-							if(points2[z2]==points1[zp]){
-								temp=zp;
-								break;
-							}
-						}
-						for(int zp=0;zp<ogr2;zp++){
-							if(points2[z2]==points1[zp]){
-								temp=zp;
-								break;
-							}
-						}	
-					}
-					int temp2 = points1[z];
-					points1[z]=points1[temp];
-					points1[temp]=temp2;	
-				}
-			
-			}
-	
-	
-		int []temp=new int[ogr1-ogr2];
+
+		int []temp=new int[ogr1-ogr2];	
+		int ij=0;
 		
 		for(int z=ogr2;z<ogr1;z++){
-			
-			//points1[z]=points2[z];	
+			temp[ij]=points2[z];ij++;
 		}
 		
-		for(MyPoint s: zbior1){
-		for(int z=0;z<MyPoint.getID_POINT();z++){
-			
-			
+		for(int z=ogr2;z<ogr1;z++){
+			boolean bool1=false;
+			for(int w =0;w<(ogr1-ogr2);w++){
 				
+				if(points1[z]==temp[w]){
+					bool1=true;
+					break;
+				}
+			}
+			//co jesli wartosci z piewszego nie ma w drugim na z miejscu stoi element ktorego nie  ma w b
+			if(bool1==false){
+				//przeszukamy 2 ciag znajdujac wyraz niebed¹cy w pierwszym jego wartosc zapisaac i potem miejsce z zamienic z miejscem na którym stoi ten element
+				int index=0;
+				int value=0;
+							
+				for(int i =0;i<(ogr1-ogr2);i++)	{
+					boolean bool2=false;
+					for(int j=ogr2;j<ogr1;j++){
+						if(points1[j]==temp[i]){
+							bool2=true;
+						}
+					}
+					if(bool2==false){
+						index=i;
+						value=temp[i];
+					//	break;
+					//}
+				//}
+				//znalezc w pierwszym zapisan¹ wartoœæ i zamienic z obecnym [z]
+				for(int i2 =0;i2<ogr3;i2++){
+					if(points1[i2]==value){
+						int t=points1[z];
+						points1[z]=value;
+						points1[i2]=t;
+						break;
+					}
+				}}}
+			}
+		}
+		int ji=0;
+		for(int z=ogr2;z<ogr1;z++){
+			points1[z]=temp[ji];
+			ji++;
+		}
+		
+			for(int z=0;z<MyPoint.getID_POINT();z++){
+				for(MyPoint s: zbior1){
 				if(s.getId_p()==points1[z]){
-					//System.out.println("----"+points1[z]+"  ");
 					r.add(s);
 				}	
 			}
@@ -138,16 +146,11 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 		return r;
 	}
 
-	
-	
-	
-	
-	
 	public void mutating(double probM) {
 
 	}
 
-	public TreeSet<Set<MyPoint>> selectin(Set<Set<MyPoint>> before) { // wybór	// tyle
+	public TreeSet<Set<MyPoint>> selectin(TreeSet<Set<MyPoint>> before) { // wybór	// tyle
 
 		TreeSet<Set<MyPoint>> tmp = new TreeSet<Set<MyPoint>>(new MyComparator());
 		int i = 0;
@@ -158,6 +161,7 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 			if (i >= population)
 				break;
 		}
+		
 		return tmp;
 	}
 
@@ -198,7 +202,7 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 				temp = r;
 			}
 		}
-		System.out.println("Suma : " + sum1);
+		System.out.println("Suma : " + sum1+" "+ret);
 		return ret;
 	}
 
