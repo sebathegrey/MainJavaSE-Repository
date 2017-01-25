@@ -15,8 +15,8 @@ public class MyPoint{
 	}
 
 	public int getDistans(MyPoint p){
-	
-	return (int) Math.sqrt(Math.pow(this.getX()-p.getX(),2)+Math.pow(this.getY()-p.getY(),2));		
+	int m=5;
+	return (int) Math.sqrt(Math.pow(m*this.getX()-m*p.getX(),2)+Math.pow(m*this.getY()-m*p.getY(),2));		
 	}
 	public int getX() {
 		return x;

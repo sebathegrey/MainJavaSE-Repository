@@ -4,6 +4,7 @@ import logic.*;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -15,9 +16,12 @@ import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -27,7 +31,16 @@ public class Main extends Application  {
 	public void start(Stage primaryStage){
 
 			Group root = new Group();
+			Button saveBut=new Button("save");
 			Scene scene = new Scene(root, 500, 500, Color.GRAY);
+			saveBut.setOnAction(new EventHandler<ActionEvent>() {
+		            @Override
+		            public void handle(ActionEvent event) {
+		                saveSceneToImg(scene);
+		            }
+		        });
+			root.getChildren().add(saveBut);
+			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 			printPopulation(root);
@@ -61,7 +74,13 @@ public class Main extends Application  {
 
 	public static void printPopulation(Group gr){
 		
-		Genetics gen= new Genetics();
+		Genetics gen=null;
+		try {
+			gen = new Genetics();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		for(int i=0;i<20;i++){      // rysowanie punktów 
 			for(int j=0;j<20;j++){

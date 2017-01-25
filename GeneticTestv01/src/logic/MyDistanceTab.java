@@ -29,8 +29,6 @@ public class MyDistanceTab {		//klasa generuj¹ca dane oraz populacje
 		for(long i=0;i<cardinality;i++){
 			population.add(generatedGen());
 		}
-		System.out.println(population);
-
 	
 	}
 	public TreeSet<Set<MyPoint>> getPopulation(){

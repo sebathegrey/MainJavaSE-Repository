@@ -1,5 +1,6 @@
 package logic;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -16,32 +17,37 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 	MyDistanceTab popul;
 	private double crossProb;
 
-	public Genetics() {
-		population = 100;
-		crossProb = 0.50;
+	public Genetics() throws InvocationTargetException {
+		population = 700;
+		crossProb = 0.40;
 		replays = 0;
 		popul = new MyDistanceTab(20, population);
 		firstPopulation = popul.getPopulation();
 		countNextPopulation(firstPopulation);
 	}
 
-	public void countNextPopulation(TreeSet<Set<MyPoint>> present) {
+	public void countNextPopulation(TreeSet<Set<MyPoint>> present) throws InvocationTargetException {
 
 		if (crossProb > 1.0)
 			return;
 
 		nextPopulation = new TreeSet<Set<MyPoint>>(new MyComparator());
-
-		int times = (int) (present.size() * crossProb);
-		nextPopulation.addAll(present);
+		nextPopulation.clear();
+		TreeSet<Set<MyPoint>> nextPopulation2 = new TreeSet<Set<MyPoint>>(new MyComparator());
+		TreeSet<Set<MyPoint>> nextPopulation3 = new TreeSet<Set<MyPoint>>(new MyComparator());
+		nextPopulation=present;
+		
+		int times = (int) (nextPopulation.size() * crossProb);
 		Set<MyPoint> tmp = null;
+		
 		int i = 0;
-		for (Set<MyPoint> myPoint : present) { // ile elementów pobieramy do
+		for (Set<MyPoint> myPoint : nextPopulation) { // ile elementów pobieramy do
 
 			if (i == 0) {
 				tmp = myPoint;
 			}else{
-				nextPopulation.add(crossing(tmp, myPoint));
+				nextPopulation2.add(crossing(tmp, myPoint));
+				nextPopulation2.add(crossing(myPoint,tmp));
 				tmp = myPoint;
 				//System.out.println(nextPopulation);
 				}
@@ -50,12 +56,20 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 			if (i >= times)
 				break;
 		}
-
-		while (replays < 4000) {
+		
+		int ia = 0;
+		for (Set<MyPoint> s : nextPopulation) {
+			nextPopulation2.add(s);
+		}
+		for (Set<MyPoint> s : nextPopulation2) {
+			ia++;
+			nextPopulation3.add(s);
+			if (ia >= population)
+				break;
+		}
+		if(replays<5000){
 			replays++;
-			TreeSet<Set<MyPoint>> nextPopulation2 = new TreeSet<Set<MyPoint>>(new MyComparator());
-			nextPopulation2.addAll(selectin(nextPopulation));
-			countNextPopulation(nextPopulation2);
+			countNextPopulation(nextPopulation3);
 		}
 	}
 
@@ -65,7 +79,7 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 		int []points2=new int[MyPoint.getID_POINT()];
 		int ii=0;
 		
-		Set<MyPoint> r=new LinkedHashSet<>();
+		LinkedHashSet<MyPoint> r=new LinkedHashSet<>();
 		
 		for(MyPoint p : zbior1){
 			points1[ii]=p.getId_p();
@@ -80,7 +94,7 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 			jj++;
 		}
 		int ogr1=(int)(0.7*MyPoint.getID_POINT());
-		int ogr2=(int)(0.2*MyPoint.getID_POINT());
+		int ogr2=(int)(0.3*MyPoint.getID_POINT());
 		int ogr3=MyPoint.getID_POINT();
 
 		int []temp=new int[ogr1-ogr2];	
@@ -142,7 +156,7 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 				}	
 			}
 		}
-		
+			//System.out.println(r);
 		return r;
 	}
 
