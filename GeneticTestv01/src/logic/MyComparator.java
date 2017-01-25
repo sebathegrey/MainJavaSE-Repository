@@ -26,6 +26,9 @@ public class MyComparator implements Comparator<Set<MyPoint>>{
 				temp=r;
 			}
 		}
-        return sum1>sum2 ? 1 :-1;
+		if(sum1<sum2)
+			return -1;
+		else if(sum1>sum2) return 1;
+		else return 0;
     }
 }

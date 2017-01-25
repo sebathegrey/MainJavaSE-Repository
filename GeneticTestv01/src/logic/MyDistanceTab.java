@@ -24,15 +24,14 @@ public class MyDistanceTab {		//klasa generuj¹ca dane oraz populacje
 		generatedPopul();
 	}
 
-	public Set<MyPoint> generatedPopul(){// generuje losowe dane do zbiorów zbioru, param licznoœæ zbiorów losowych, licznosc populacji 
+	public void generatedPopul(){// generuje losowe dane do zbiorów zbioru, param licznoœæ zbiorów losowych, licznosc populacji 
 		
 		for(long i=0;i<cardinality;i++){
 			population.add(generatedGen());
 		}
-		for(Set<MyPoint> p: population){
-			return p;
-		}
-		return null;
+		System.out.println(population);
+
+	
 	}
 	public TreeSet<Set<MyPoint>> getPopulation(){
 	
@@ -50,7 +49,7 @@ public class MyDistanceTab {		//klasa generuj¹ca dane oraz populacje
 		    MyPoint next = myPointTab[rng.nextInt(gen)];
 		    generated.add(next);
 		}	
-		//System.out.println(generated);
+		System.out.println(generated);
 		return generated;		
 	}
 	
