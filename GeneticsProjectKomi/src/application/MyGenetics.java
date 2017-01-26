@@ -7,33 +7,46 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class MyFirstPop {
+public class MyGenetics {
 
 	private MyPoint [] myPointTab;
-	private int pointCardin;
-	private int cardinality;
 	private TreeMap<Double,LinkedHashSet<MyPoint>> mapPopulacji;
 	private TreeMap<Double,LinkedHashSet<MyPoint>> mapLastPop;	
+	private LinkedHashSet<MyPoint> aktualPop;
+	
+	private int pointCardin;
+	private int cardinality;
 	private int stopGen;
 	private int licz;
 	private double prawdopKrz;
+	private int mutProc;
+	private double aktBestSolut;
+	private double bestSolut;
 	
-	public MyFirstPop(int licznoscPop,int liczbaPunk){
+	public MyGenetics(int licznoscPop,int liczbaPunk){
 		
 		licz=0;
 		
-		prawdopKrz = 0.555;
-		stopGen=50;
+		setBestSolut(471); //minimalne rozwi¹zanie
+		setMutProc(10); 		// losowa mmutacja w ra¿ona w procentach
+		setPrawdopKrz (0.55);	//
+		setStopGen(100);		//
+		setCardinality(licznoscPop);	//liczba osobników w populacji
+		setPointCardin(liczbaPunk);		//liczba punktów w przedziale 
+		
+		
 		mapPopulacji=new TreeMap<>();
 		mapLastPop=new TreeMap<>();
-		setCardinality(licznoscPop);
-		setPointCardin(liczbaPunk);
-		initP();
-		setPopulacja();
-		nextPopulation();
+		
+		initP();						//initializacja listy punktow 
+		initP(new MyPoint(52,52));
+		initP(new MyPoint(2,2));
+		setPopulacja();					//populacja losowa pierwsza
+		
+		countNextPopulation();			//generacja kolejnych populacji 
 	}
 	
-	public double wayValue(LinkedHashSet<MyPoint> myPoints){
+	public double wayValue(LinkedHashSet<MyPoint> myPoints){ // droga dla danego chromosomu
 		double sum=0;
 		MyPoint temp=null,first=null,last=null,my=null;
 		Iterator<MyPoint > it=myPoints.iterator();
@@ -53,7 +66,7 @@ public class MyFirstPop {
 		return  sum;
 	}
 	
-	public void setPopulacja(){
+	public void setPopulacja(){ // generuje losowa populacje
 		
 		while(mapPopulacji.size()<cardinality){
 		
@@ -64,9 +77,9 @@ public class MyFirstPop {
 			System.out.println(mapPopulacji.firstKey());
 	}
 	
-	public LinkedHashSet<MyPoint> generatedGen(){
+	public LinkedHashSet<MyPoint> generatedGen(){ //generuje losowy chromosom
 		//generowanie listy genów czyli zbiór My Pointów losowy ustawionych 	
-			final int gen=getPointCardin();
+			final int gen=MyPoint.getID_POINT();
 			Random rng = new Random(); 
 			LinkedHashSet<MyPoint> generated = new LinkedHashSet<MyPoint>(); //zbiór losowych genów 
 			
@@ -77,7 +90,7 @@ public class MyFirstPop {
 		return generated;		
 		}
 	
-	public void initP(){
+	public void initP(){  //initialiacja punktów 
 	// inicjacja listy obiektów Punktów  oraz tabeli odleg³oœci (chyba niepotrzebne)
 		int pointNum = getPointCardin();
 		myPointTab=new MyPoint[pointNum];
@@ -101,21 +114,25 @@ public class MyFirstPop {
 		myPointTab[17]=new MyPoint(58,38);
 		myPointTab[18]=new MyPoint(77,8);
 		myPointTab[19]=new MyPoint(61,88);
-		//myDistanc=new int[pointNum][pointNum];
 		
-/*		for(int i=0;i<pointNum;i++){			// inicjalizacja myDistanc wartosci obliczone do porównywania ale mam przeciez nasz Comparator dlat. raczej NOTUSE
-			for(int j=0;j<pointNum;j++){
-//				myDistanc[i][j]=myPointTab[i].getDistans(myPointTab[j]);
-			}
-		}*/
 	}
-
-	
-	public void nextPopulation(){
+	public void initP(MyPoint my){
+		int pointNum = MyPoint.getID_POINT();
 		
-		double naj =1220;
+		MyPoint myPointTab2[]=new MyPoint[pointNum];
 		
-		while(licz<stopGen){
+		for(int i=0; i < pointNum-1;i++){
+			myPointTab2[i]=myPointTab[i];
+		}
+		myPointTab2[pointNum-1]=my;
+		
+		myPointTab=myPointTab2;
+	}
+	public void countNextPopulation(){
+		
+		aktBestSolut=mapPopulacji.firstKey();
+		while(aktBestSolut > bestSolut){
+		//while(licz<stopGen){
 			licz++;
 			int size = (int) (mapPopulacji.size()*prawdopKrz);
 			int times = 0;
@@ -131,14 +148,18 @@ public class MyFirstPop {
 					first=my;
 				
 				}else{
-					temp2=crossing(temp,my);
+					temp2=doCrossing(temp,my);
 					mapLastPopj.put(wayValue(temp2), temp2);
-					temp3=crossing(my,temp);
+					temp3=doCrossing(my,temp);
 					mapLastPopj.put(wayValue(temp3), temp3);
 					last=my;
 					temp=my;
 				}
-				if(times>size)break;
+				if(times>size){
+					mapLastPopj.put(wayValue(first), last);
+					mapLastPopj.put(wayValue(last), first);
+					break;
+				}
 				times++;
 			}
 			for( LinkedHashSet<MyPoint> s : mapPopulacji.values()){
@@ -151,20 +172,17 @@ public class MyFirstPop {
 				mapLastPop.put(s.getKey(),s.getValue());
 				i++;
 			}
-			mapPopulacji=mapLastPop;
-			double t=mapPopulacji.firstKey();
-			if(t<naj)
-			naj=t;
+			mapPopulacji=doMutation(mapLastPop);
+			aktBestSolut=mapPopulacji.firstKey();
+			if(licz > 100000)break;
+			System.out.println(mapPopulacji.firstKey() +"  licz : "+licz);
 		}
-		System.out.println(mapLastPop.firstKey()+"\n"+naj);
+		System.out.println(mapPopulacji.firstKey());
 		return;		
-		//mapPopulacji=mapLastPop;
-		//nextPopulation();
+
 	}
 	
-	
-	
-	public LinkedHashSet<MyPoint> crossing(LinkedHashSet<MyPoint> zbior1,LinkedHashSet<MyPoint> zbior2){
+	public LinkedHashSet<MyPoint> doCrossing(LinkedHashSet<MyPoint> zbior1,LinkedHashSet<MyPoint> zbior2){
 		
 		int []points1=new int[MyPoint.getID_POINT()];
 		int []points2=new int[MyPoint.getID_POINT()];
@@ -223,18 +241,18 @@ public class MyFirstPop {
 					if(bool2==false){
 						index=i;
 						value=temp[i];
-					//	break;
-					//}
-				//}
+
 				//znalezc w pierwszym zapisan¹ wartoœæ i zamienic z obecnym [z]
-				for(int i2 =0;i2<ogr3;i2++){
-					if(points1[i2]==value){
-						int t=points1[z];
-						points1[z]=value;
-						points1[i2]=t;
-						break;
+						for(int i2 =0;i2<ogr3;i2++){
+							if(points1[i2]==value){
+								int t=points1[z];
+								points1[z]=value;
+								points1[i2]=t;
+								break;
+							}
+						}
 					}
-				}}}
+				}
 			}
 		}
 		int ji=0;
@@ -250,15 +268,65 @@ public class MyFirstPop {
 				}	
 			}
 		}
-			//System.out.println(r);
 		return r;
 	}	
-	public LinkedHashSet<MyPoint> getLastPop(){
+	
+	public TreeMap<Double, LinkedHashSet<MyPoint>> doMutation(TreeMap<Double,LinkedHashSet<MyPoint>> my){
 		
-		return mapLastPop.firstEntry().getValue();
+		TreeMap<Double, LinkedHashSet<MyPoint>> temp1=new TreeMap<>();
+		double tempD=0;
+		LinkedHashSet<MyPoint> tempL=null;
+		Entry<Double, LinkedHashSet<MyPoint>> tempS=null;
+		Iterator<Entry<Double, LinkedHashSet<MyPoint>>> it = my.entrySet().iterator();
+			
+		while(it.hasNext()){
+				tempS=it.next();
+				tempD=tempS.getKey();
+				tempL=tempS.getValue();
+				if((new Random().nextInt(100)+1)<mutProc ){
+					//mutacja na LinkedHashSet<MyPoint>
+					LinkedHashSet<MyPoint> tempL2=new LinkedHashSet<>();
+					MyPoint pointTab[] = new MyPoint[MyPoint.getID_POINT()];
+					int i=0;
+					
+					for(MyPoint tmpPoint:tempL){
+						pointTab[i]=tmpPoint;
+						i++;
+					}
+					int j=0,j2=0;
+					while(j==j2){
+					 j = new Random().nextInt(MyPoint.getID_POINT());
+					 j2 = new Random().nextInt(MyPoint.getID_POINT());
+					}
+					MyPoint tmp=pointTab[j];
+					pointTab[j]=pointTab[j2];
+					pointTab[j2]=tmp;
+					
+					for(int z=0;z<MyPoint.getID_POINT();z++){
+						
+						tempL2.add(pointTab[z]);
+					}
+					temp1.put(wayValue(tempL2), tempL2);
+				}else {
+					temp1.put(tempD, tempL);
+				}
+			}
+			return temp1;
+	}
+	
+	
+	//Gettery i settery
+	public LinkedHashSet<MyPoint> getAktualPop(TreeMap<Double, LinkedHashSet<MyPoint>> tree){
+		
+		return aktualPop;
 		
 	}
-	public LinkedHashSet<MyPoint> getFirstPop(){
+	public LinkedHashSet<MyPoint> setAktualPop(TreeMap<Double, LinkedHashSet<MyPoint>> tree){
+		
+		return aktualPop=tree.firstEntry().getValue();
+		
+	}
+	public LinkedHashSet<MyPoint> getLastPop(){
 		
 		return mapPopulacji.firstEntry().getValue();
 		
@@ -266,16 +334,43 @@ public class MyFirstPop {
 	public int getPointCardin() {
 		return pointCardin;
 	}
-
 	public void setPointCardin(int pointCardin) {
 		this.pointCardin = pointCardin;
 	}
-
 	public int getCardinality() {
 		return cardinality;
 	}
-
 	public void setCardinality(int cardinality) {
 		this.cardinality = cardinality;
+	}
+	public MyPoint [] getMyPointTab() {
+		return myPointTab;
+	}
+	public void setMyPointTab(MyPoint [] myPointTab) {
+		this.myPointTab = myPointTab;
+	}
+	public int getStopGen() {
+		return stopGen;
+	}
+	public void setStopGen(int stopGen) {
+		this.stopGen = stopGen;
+	}
+	public int getMutProc() {
+		return mutProc;
+	}
+	public void setMutProc(int mutProc) {
+		this.mutProc = mutProc;
+	}
+	public double getBestSolut() {
+		return bestSolut;
+	}
+	public void setBestSolut(double bestSolut) {
+		this.bestSolut = bestSolut;
+	}
+	public double getPrawdopKrz() {
+		return prawdopKrz;
+	}
+	public void setPrawdopKrz(double prawdopKrz) {
+		this.prawdopKrz = prawdopKrz;
 	}
 }
