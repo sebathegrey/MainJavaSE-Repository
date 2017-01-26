@@ -18,7 +18,7 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 	private double crossProb;
 
 	public Genetics() throws InvocationTargetException {
-		population = 700;
+		population = 300;
 		crossProb = 0.40;
 		replays = 0;
 		popul = new MyDistanceTab(20, population);
@@ -67,7 +67,7 @@ public class Genetics { // utworzyc populacje robic cosokreslona ilosc razy z
 			if (ia >= population)
 				break;
 		}
-		if(replays<5000){
+		if(replays<6000){
 			replays++;
 			countNextPopulation(nextPopulation3);
 		}
