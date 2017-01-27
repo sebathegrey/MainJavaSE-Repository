@@ -4,15 +4,16 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.TreeMap;
 
-public class MyGenetics {
+public class MyGenetics implements Runnable{
 
 	private MyPoint [] myPointTab;
 	private TreeMap<Double,LinkedHashSet<MyPoint>> mapPopulacji;
 	private TreeMap<Double,LinkedHashSet<MyPoint>> mapLastPop;	
 	private LinkedHashSet<MyPoint> aktualPop;
+	
+	private boolean semafor;
 	
 	private int pointCardin;
 	private int cardinality;
@@ -23,13 +24,28 @@ public class MyGenetics {
 	private double aktBestSolut;
 	private double bestSolut;
 	
+	@Override
+	public void run() {
+
+		initP();						//initializacja listy punktow 
+		initP(new MyPoint(52,52));
+		initP(new MyPoint(2,2));
+		initP(new MyPoint(1,99));
+		initP(new MyPoint(99,99));
+		setPopulacja();					//populacja losowa pierwsza
+		
+		countNextPopulation();
+	}
+	
 	public MyGenetics(int licznoscPop,int liczbaPunk){
+		
 		
 		licz=0;
 		
-		setBestSolut(471); //minimalne rozwi¹zanie
-		setMutProc(10); 		// losowa mmutacja w ra¿ona w procentach
-		setPrawdopKrz (0.55);	//
+		setSemafor(false);
+		setBestSolut(490); //minimalne rozwi¹zanie
+		setMutProc(8); 		// losowa mmutacja w ra¿ona w procentach
+		setPrawdopKrz (0.65);	//
 		setStopGen(100);		//
 		setCardinality(licznoscPop);	//liczba osobników w populacji
 		setPointCardin(liczbaPunk);		//liczba punktów w przedziale 
@@ -38,12 +54,14 @@ public class MyGenetics {
 		mapPopulacji=new TreeMap<>();
 		mapLastPop=new TreeMap<>();
 		
-		initP();						//initializacja listy punktow 
+	/*	initP();						//initializacja listy punktow 
 		initP(new MyPoint(52,52));
 		initP(new MyPoint(2,2));
+		initP(new MyPoint(1,99));
+		initP(new MyPoint(99,99));
 		setPopulacja();					//populacja losowa pierwsza
 		
-		countNextPopulation();			//generacja kolejnych populacji 
+		countNextPopulation();	*/		//generacja kolejnych populacji 
 	}
 	
 	public double wayValue(LinkedHashSet<MyPoint> myPoints){ // droga dla danego chromosomu
@@ -174,8 +192,15 @@ public class MyGenetics {
 			}
 			mapPopulacji=doMutation(mapLastPop);
 			aktBestSolut=mapPopulacji.firstKey();
-			if(licz > 100000)break;
-			System.out.println(mapPopulacji.firstKey() +"  licz : "+licz);
+			
+			if(isSemafor()==false){
+				setSemafor(false);
+				setAktualPop(mapPopulacji);
+			}
+			setSemafor(true);
+			
+			if(licz > 200)break;
+			//System.out.println(mapPopulacji.firstKey() +"  licz : "+licz);
 		}
 		System.out.println(mapPopulacji.firstKey());
 		return;		
@@ -313,17 +338,16 @@ public class MyGenetics {
 			}
 			return temp1;
 	}
-	
-	
+		
 	//Gettery i settery
-	public LinkedHashSet<MyPoint> getAktualPop(TreeMap<Double, LinkedHashSet<MyPoint>> tree){
+	public LinkedHashSet<MyPoint> getAktualPop(){
 		
 		return aktualPop;
 		
 	}
-	public LinkedHashSet<MyPoint> setAktualPop(TreeMap<Double, LinkedHashSet<MyPoint>> tree){
+	public  void setAktualPop(TreeMap<Double, LinkedHashSet<MyPoint>> tree){
 		
-		return aktualPop=tree.firstEntry().getValue();
+		aktualPop=tree.firstEntry().getValue();
 		
 	}
 	public LinkedHashSet<MyPoint> getLastPop(){
@@ -373,4 +397,14 @@ public class MyGenetics {
 	public void setPrawdopKrz(double prawdopKrz) {
 		this.prawdopKrz = prawdopKrz;
 	}
+
+	public boolean isSemafor() {
+		return semafor;
+	}
+
+	public void setSemafor(boolean semafor) {
+		this.semafor = semafor;
+	}
+
+
 }

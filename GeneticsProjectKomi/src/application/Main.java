@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -28,12 +29,18 @@ import javafx.scene.shape.Line;
 
 public class Main extends Application {
 	
+	
+	private static Scene scene;
+	private static Group root;
+	private boolean semafor2;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			Group root = new Group();
+			setSemafor2(true);
+			root = new Group();
 			Button saveBut=new Button("save");
-			Scene scene = new Scene(root, 500, 500, Color.GRAY);
+			scene = new Scene(root, 500, 500, Color.GRAY);
 			
 			saveBut.setOnAction(new EventHandler<ActionEvent>() {
 		            @Override
@@ -46,7 +53,7 @@ public class Main extends Application {
 			
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			
+		
 			printPopulation(root);
 			
 		} catch(Exception e) {
@@ -56,6 +63,8 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		launch(args);
+		
+
 	}
 	public static void saveSceneToImg(Scene sc){//zapis automatyczny do pliku z aktualn¹ dat¹ 
 	
@@ -74,10 +83,44 @@ public class Main extends Application {
 				e.printStackTrace();
 			}
 		}
+	
+	public static void printAkt(){
+		
+		
+	}
+	
+	
 	public static void printPopulation(Group gr){
 		
-		MyGenetics gen=null;
+		MyGenetics  gen;
 		gen = new MyGenetics(200,20);
+		Thread s = new Thread(gen);
+		s.start();
+		
+		while(s.isAlive()){
+			if(gen.isSemafor()){
+
+				gen.setSemafor(false);
+
+			    Line line=null;
+				MyPoint temp=null,first=null,last=null;
+				Set<MyPoint> points=gen.getAktualPop();
+				for(MyPoint p1 : points){
+					if(temp==null){
+						temp=p1;
+						first=p1;
+					}else{
+						line = new MyLine(temp,p1);
+						gr.getChildren().add(line);
+						temp=p1;
+						last=p1;
+					}
+				}
+				gr.getChildren().clear();
+				gr.getChildren().add(new MyLine(first,last));
+
+			}
+		}
 		
 		for(int i=0;i<MyPoint.getID_POINT();i++){      // rysowanie punktów 
 			for(int j=0;j<MyPoint.getID_POINT();j++){
@@ -102,7 +145,16 @@ public class Main extends Application {
 		gr.getChildren().add(new MyLine(first,last));	
 	
 	}
+
+	public boolean isSemafor2() {
+		return semafor2;
+	}
+
+	public void setSemafor2(boolean semafor2) {
+		this.semafor2 = semafor2;
+	}
 }
+
 
 class MyLine extends Line{
 	private static final int MULTI=5;
