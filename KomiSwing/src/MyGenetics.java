@@ -11,17 +11,20 @@ public class MyGenetics implements Runnable{
 	private MyPoint [] myPointTab;
 	private TreeMap<Double,LinkedHashSet<MyPoint>> mapPopulacji;
 	private TreeMap<Double,LinkedHashSet<MyPoint>> mapLastPop;	
-	private LinkedHashSet<MyPoint> aktualPop;
 	
+	private LinkedHashSet<MyPoint> aktualPop;
 	private volatile boolean semafor;
+	private double oAktBestSolut;
+	private double oAktPopul;
+	
+	private double aktBestSolut;
+	private int licz;
 	
 	private int pointCardin;
 	private int cardinality;
 	private int stopGen;
-	private int licz;
 	private double prawdopKrz;
 	private int mutProc;
-	private double aktBestSolut;
 	private double bestSolut;
 	
 	@Override
@@ -207,6 +210,8 @@ public class MyGenetics implements Runnable{
 			if(isSemafor()==false){
 				setSemafor(false);
 				setAktualPop(mapPopulacji);
+				setoAktBestSolut(aktBestSolut);
+				setoAktPopul(licz);
 			}
 			setSemafor(true);
 			
@@ -418,6 +423,22 @@ public class MyGenetics implements Runnable{
 
 	public void setSemafor(boolean semafor) {
 		this.semafor = semafor;
+	}
+
+	public double getoAktBestSolut() {
+		return oAktBestSolut;
+	}
+
+	public void setoAktBestSolut(double oAktBestSolut) {
+		this.oAktBestSolut = oAktBestSolut;
+	}
+
+	public double getoAktPopul() {
+		return oAktPopul;
+	}
+
+	public void setoAktPopul(double oAktPopul) {
+		this.oAktPopul = oAktPopul;
 	}
 
 
