@@ -11,8 +11,13 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,13 +32,14 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 
-public class Main extends Application {
+public class Main extends Application  {
 	
 	
 	private static Scene scene;
 	private static Group root;
 	private boolean semafor2;
-	
+	static MyGenetics  gen;
+	static Thread t1;
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -42,18 +48,15 @@ public class Main extends Application {
 			Button saveBut=new Button("save");
 			scene = new Scene(root, 500, 500, Color.GRAY);
 			
-			saveBut.setOnAction(new EventHandler<ActionEvent>() {
-		            @Override
-		            public void handle(ActionEvent event) {
-		                saveSceneToImg(scene);
-		            }
-		        });
+			saveBut.setOnAction(e -> saveSceneToImg(scene));
 			root.getChildren().add(saveBut);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
 			
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		
+			
 			printPopulation(root);
 			
 		} catch(Exception e) {
@@ -84,48 +87,58 @@ public class Main extends Application {
 			}
 		}
 	
-	public static void printAkt(){
-		
-		
-	}
-	
 	
 	public static void printPopulation(Group gr){
 		
-		MyGenetics  gen;
-		gen = new MyGenetics(200,20);
-		Thread s = new Thread(gen);
-		s.start();
 		
-		while(s.isAlive()){
-			if(gen.isSemafor()){
+		gen = new MyGenetics(200,20);
+		t1 = new Thread(gen);
+		t1.start();
+/*		Thread t2 = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				while(t1.isAlive()){
+					if(gen.isSemafor()){
 
-				gen.setSemafor(false);
+						gen.setSemafor(false);
 
-			    Line line=null;
-				MyPoint temp=null,first=null,last=null;
-				Set<MyPoint> points=gen.getAktualPop();
-				for(MyPoint p1 : points){
-					if(temp==null){
-						temp=p1;
-						first=p1;
-					}else{
-						line = new MyLine(temp,p1);
-						gr.getChildren().add(line);
-						temp=p1;
-						last=p1;
+					    Line line=null;
+						MyPoint temp=null,first=null,last=null;
+						Set<MyPoint> points=gen.getAktualPop();
+						for(MyPoint p1 : points){
+							if(temp==null){
+								temp=p1;
+								first=p1;
+							}else{
+								line = new MyLine(temp,p1);
+								root.getChildren().add(line);
+								temp=p1;
+								last=p1;
+							}
+						}
+						root.getChildren().clear();
+						root.getChildren().add(new MyLine(first,last));
+
 					}
 				}
-				gr.getChildren().clear();
-				gr.getChildren().add(new MyLine(first,last));
-
+				
 			}
-		}
+		});
+		Platform.runLater(new Runnable() {
+			   @Override
+			   public void run(){
+		t2.start();
 		
+			   }
+			   
+			   });*/
+		
+/*		while(t1.isAlive());
 		for(int i=0;i<MyPoint.getID_POINT();i++){      // rysowanie punktów 
 			for(int j=0;j<MyPoint.getID_POINT();j++){
-				Circle circle = new Circle(gen.getMyPointTab()[i].getX()*5,gen.getMyPointTab()[i].getY()*5,5);
-				gr.getChildren().add(circle);
+				
 			}
 		}
 		Line line=null;
@@ -137,12 +150,13 @@ public class Main extends Application {
 				first=p1;
 			}else{
 				line = new MyLine(temp,p1);
-				gr.getChildren().add(line);
+				root.getChildren().add(line);
 				temp=p1;
 				last=p1;
 			}
 		}
-		gr.getChildren().add(new MyLine(first,last));	
+		root.getChildren().add(new MyLine(first,last));	
+	*/
 	
 	}
 
@@ -153,7 +167,23 @@ public class Main extends Application {
 	public void setSemafor2(boolean semafor2) {
 		this.semafor2 = semafor2;
 	}
+
+
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 class MyLine extends Line{

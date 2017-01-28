@@ -13,7 +13,7 @@ public class MyGenetics implements Runnable{
 	private TreeMap<Double,LinkedHashSet<MyPoint>> mapLastPop;	
 	private LinkedHashSet<MyPoint> aktualPop;
 	
-	private boolean semafor;
+	private volatile boolean semafor;
 	
 	private int pointCardin;
 	private int cardinality;
