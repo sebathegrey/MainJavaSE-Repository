@@ -110,7 +110,7 @@ public class MyKomivo extends JPanel {
     public static void main(String[] args){
     	
         	SwingUtilities.invokeLater(() -> {
-            JFrame jFrame = new JFrame("Graphics"); 
+            JFrame jFrame = new JFrame(""); 
             JButton but = new JButton("Save");
             JButton but1 = new JButton("Start");
             JPanel view = new JPanel();
