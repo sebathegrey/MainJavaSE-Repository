@@ -1,9 +1,12 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -27,10 +30,12 @@ public class MyKomivo extends JPanel {
     static JPanel res;
     static JLabel aktBestPop;
     static JLabel aktPop;
-    MyKomivo() {
+    static JLabel alertMessage;
+    static Thread genThread;
 
-    }
-    
+	MyKomivo() {
+	}
+
     @Override
     protected synchronized void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -69,12 +74,12 @@ public class MyKomivo extends JPanel {
 					temp=p1;
 					first=p1;
 				}else{
-					offg.drawLine(5*temp.getX(), 5*temp.getY(), 5*p1.getX(), 5*p1.getY());
+					offg.drawLine(temp.getX(), temp.getY(), p1.getX(), p1.getY());
 					temp=p1;
 					last=p1;
 				}
 			}
-			offg.drawLine(5*first.getX(), 5*first.getY(), 5*last.getX(), 5*last.getY());
+			offg.drawLine(first.getX(), first.getY(), last.getX(), last.getY());
 			//f.paintComponents(s);
 		}
 	}   
@@ -87,24 +92,24 @@ public class MyKomivo extends JPanel {
         }  
     }
     
-    public static void saveToFile(){
+	public static void saveToFile(){
     	DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 		String s= dateFormat.format(new Date())+".png";
 		File file = new File("results/"+s);
     	try {
 			ImageIO.write(offi, "PNG", file);
+	    	genThread.stop();
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-    	
+		} 
     }
     
     public static void startApp(){
     	
-        new Thread(gen).start();
-
-        new Thread(() -> dpl.drawLine()).start();;
+        genThread=new Thread(gen);
+        genThread.start();
     }
     
     public static void main(String[] args){
@@ -115,13 +120,57 @@ public class MyKomivo extends JPanel {
             JButton but1 = new JButton("Start");
             JPanel view = new JPanel();
             JPanel mainView = new JPanel(new BorderLayout());
-                      
+            JPanel alertMsg = new JPanel();
+
+            alertMessage = new JLabel("Kliknij aby dodaæ punkty");
+            alertMsg.add(alertMessage);
+            alertMsg.setBackground(Color.BLACK);
+            
             dpl = new MyKomivo();
             res=new JPanel();
             aktBestPop=new JLabel("Najlepszy wynik : 0");
             aktPop=new JLabel("Populacja : 0");
             
             gen = new MyGenetics(200,20);
+            gen.initP();
+    		genThread = new Thread(gen);
+
+            dpl.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					if(genThread.isAlive()||genThread.isInterrupted()){
+						alertMessage.setText("Nie mo¿na dodaæ punktu, watek rozpoczêty");
+					}else{
+					gen.initP(new MyPoint(arg0.getX(), arg0.getY()));
+					}
+				}
+			});
             
             mainView.setSize(550,550);
             dpl.setSize(550, 500);
@@ -145,20 +194,22 @@ public class MyKomivo extends JPanel {
             res.add(aktBestPop);
             res.add(aktPop);
             
+            mainView.add(alertMsg, BorderLayout.PAGE_START);
             mainView.add(dpl, BorderLayout.CENTER);
             mainView.add(res, BorderLayout.PAGE_END);
            
             view.add(but1);
             view.add(but);
-            
+           
             jFrame.add(mainView,BorderLayout.CENTER);
             jFrame.add(view,BorderLayout.PAGE_END);
             
-            jFrame.setSize(550,600);
+            jFrame.setSize(550,650);
             jFrame.setResizable(true);
             jFrame.setVisible(true);
             jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             
+            new Thread(() -> dpl.drawLine()).start();;
 
         });
     }
